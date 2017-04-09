@@ -2,6 +2,7 @@ package com.coolweather.android;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,8 @@ import org.litepal.crud.DataSupport;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EventListener;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 import okhttp3.Call;
@@ -74,6 +77,12 @@ public class AreaFragment extends android.support.v4.app.Fragment{
                 }else if (currentLevel==LEVEL_CITY){
                     selectCity=cityList.get(position);
                     queryCounties();
+                }else if (currentLevel==LEVEL_COUNTY){
+                    String weatherId = countyList.get(position).getWeatherId();
+                    Intent intent = new Intent(getActivity(),WeatherActivity.class);
+                    intent.putExtra("weather_id",weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
@@ -142,8 +151,8 @@ public class AreaFragment extends android.support.v4.app.Fragment{
             for (County county : countyList){
                 dataList.add(county.getCountryName());
             }
-            adapter.notifyDataSetChanged();
-            listView.setSelection(0);
+            adapter.notifyDataSetChanged();//刷新。
+            listView.setSelection(0);//将列表移动指定到指定的position（位置）处。
             currentLevel=LEVEL_COUNTY;
         }else {
             int provinceCode = selectProvince.getProvinceCode();
